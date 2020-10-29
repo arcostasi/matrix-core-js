@@ -1,0 +1,15 @@
+{
+  "name": "matrix-core-js",
+  "version": "1.0.0",
+  "description": "MATRIX Core JS examples",
+  "main": "app.js",
+  "scripts": {
+    "app": "node app.js"
+  },
+  "author": "Anderson Costa",
+  "license": "ISC",
+  "dependencies": {
+    "matrix-protos": "0.0.28",
+    "zeromq": "^5.2.0"
+  }
+}
