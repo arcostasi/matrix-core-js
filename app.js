@@ -1,12 +1,12 @@
 // Set Initial Variables
-let zmq = require('zeromq'); // Asynchronous Messaging Framework
-let matrixIO = require('matrix-protos').matrix_io; // Protocol Buffers for MATRIX function
-let matrixIP = '127.0.0.1';  // Local IP
-let everloopBasePort = 20021 // Port for Everloop driver
+const zmq = require('zeromq'); // Asynchronous Messaging Framework
+const matrixIO = require('matrix-protos').matrix_io; // Protocol Buffers for MATRIX function
+const matrixIP = '192.168.15.12';  // Local IP
+const everloopBasePort = 20021 // Port for Everloop driver
 let matrixDeviceLeds = 0;    // Holds amount of LEDs on MATRIX device
 
 // Port error
-let errorSocket = zmq.socket('sub'); // Create a Subscriber socket
+const errorSocket = zmq.socket('sub'); // Create a Subscriber socket
 errorSocket.connect('tcp://' + matrixIP + ':' + (everloopBasePort + 2)); // Connect Subscriber to Error port
 errorSocket.subscribe(''); // Subscribe to messages
 // On Message
@@ -15,7 +15,7 @@ errorSocket.on('message', (error_message) => {
 });
 
 // Data update port
-let updateSocket = zmq.socket('sub'); // Create a Subscriber socket
+const updateSocket = zmq.socket('sub'); // Create a Subscriber socket
 updateSocket.connect('tcp://' + matrixIP + ':' + (everloopBasePort + 3));// Connect Subscriber to Data Update port
 updateSocket.subscribe(''); // Subscribe to messages
 // On Message
@@ -25,14 +25,14 @@ updateSocket.on('message', (buffer) => {
 });
 
 // Keep-alive port
-let pingSocket = zmq.socket('push'); // Create a Pusher socket
+const pingSocket = zmq.socket('push'); // Create a Pusher socket
 
 // Connect Pusher to Keep-alive port
 pingSocket.connect('tcp://' + matrixIP + ':' + (everloopBasePort + 1));
 pingSocket.send(''); // Send a single ping
 
 // Base port
-let configSocket = zmq.socket('push');// Create a Pusher socket
+const configSocket = zmq.socket('push');// Create a Pusher socket
 
 // Connect Pusher to Base port
 configSocket.connect('tcp://' + matrixIP + ':' + everloopBasePort);
