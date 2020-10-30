@@ -1,6 +1,7 @@
 // Set Initial Variables
 const zmq = require('zeromq'); // Asynchronous Messaging Framework
 const matrixIO = require('matrix-protos').matrix_io; // Protocol Buffers for MATRIX function
+const figures = require('figures');
 const matrixIP = '192.168.15.12';  // Local IP
 const everloopBasePort = 20021 // Port for Everloop driver
 let matrixDeviceLeds = 0;    // Holds amount of LEDs on MATRIX device
@@ -41,8 +42,7 @@ configSocket.connect('tcp://' + matrixIP + ':' + everloopBasePort);
 let image = matrixIO.malos.v1.io.EverloopImage.create();
 let counter = 0;
 
-// Loop every 25 milliseconds
-setInterval(function() {
+function turnOffLeds() {
     // For each device LED
     for (let i = 0; i < matrixDeviceLeds; ++i) {
         // Set individual LED value
@@ -53,6 +53,12 @@ setInterval(function() {
             white: 0
         };
     }
+}
+
+// Loop every 25 milliseconds
+let interval = setInterval(function() {
+    // Turn off the LEDs
+    turnOffLeds();
 
     // Set LED red
     image.led[(counter / 2) % matrixDeviceLeds] = {
@@ -97,3 +103,40 @@ setInterval(function() {
     if (matrixDeviceLeds > 0)
         configSocket.send(matrixIO.malos.v1.driver.DriverConfig.encode(config).finish());
 }, 25);
+
+// Enables keypress events to be emitted from the console
+const readline = require('readline');
+readline.emitKeypressEvents(process.stdin);
+
+process.stdin.setRawMode(true);
+process.stdin.on('keypress', (str, key) => {
+  if (key.ctrl && key.name === 'c') {
+    // Stop animation
+    clearInterval(interval);
+    console.log('\x1b[31m%s\x1b[0m', figures.tick, 'Shutting down');
+
+    // Turn off the LEDs
+    turnOffLeds();
+
+    // Store the Everloop image in MATRIX configuration
+    let config = matrixIO.malos.v1.driver.DriverConfig.create({
+        'image': image
+    });
+
+    // Send MATRIX configuration to MATRIX device
+    if (matrixDeviceLeds > 0)
+        configSocket.send(matrixIO.malos.v1.driver.DriverConfig.encode(config).finish());
+
+    // Process exit after 1 second
+    setTimeout(function() {
+        process.exit();
+    }, 1000);
+  }
+});
+
+// Clear screen
+process.stdout.write('\033c');
+
+// Prints on the console
+console.log('\x1b[32m%s\x1b[0m', figures.tick, 'Getting started');
+console.log('Press <Ctrl+C> to exit...');
