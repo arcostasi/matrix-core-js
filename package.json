@@ -5,7 +5,8 @@
   "main": "app.js",
   "scripts": {
     "everloop": "node everloop.js",
-    "gyroscopic": "node gyroscopic.js"
+    "gyroscopic": "node gyroscopic.js",
+    "servo": "node servo.js"
   },
   "author": "Anderson Costa",
   "license": "ISC",
