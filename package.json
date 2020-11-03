@@ -4,8 +4,8 @@
   "description": "MATRIX Core JS examples",
   "main": "app.js",
   "scripts": {
-    "app": "node app.js",
-    "off": "node off.js"
+    "everloop": "node everloop.js",
+    "gyroscopic": "node gyroscopic.js"
   },
   "author": "Anderson Costa",
   "license": "ISC",
